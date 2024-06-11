@@ -1,0 +1,64 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>WebSocket Client</title>  
+</head>  
+<body>  
+  
+<h1>WebSocket Client</h1>  
+  
+<div>  
+    <button onclick="sendMessage()">Send Message</button>  
+</div>  
+  
+<div id="messages"></div>  
+  
+<script>  
+    // 创建一个新的WebSocket对象  
+    var socket = new WebSocket('ws://localhost:8765');  
+  
+    // 连接建立时触发  
+    socket.onopen = function(event) {  
+        console.log('Connected to server!');
+        socket.send('hello');    
+    };  
+  
+    // 收到服务器消息时触发  
+    socket.onmessage = function(event) {  
+        var messagesDiv = document.getElementById('messages');  
+        var messageElement = document.createElement('div');  
+        messageElement.textContent = 'Server: ' + event.data;  
+        messagesDiv.appendChild(messageElement);  
+    };  
+  
+    // 连接关闭时触发  
+    socket.onclose = function(event) {  
+        if (event.wasClean) {  
+            console.log('Connection closed cleanly, code=' + event.code + ' reason=' + event.reason);  
+        } else {  
+            console.error('Connection died');  
+        }  
+    };  
+  
+    // 错误发生时触发  
+    socket.onerror = function(error) {  
+        console.error('WebSocket Error: ', error);  
+    };  
+  
+    // 发送消息的函数  
+    function sendMessage() {  
+        var message = prompt('Enter a message to send:');  
+        if (message) {  
+            socket.send(message);  
+            var messagesDiv = document.getElementById('messages');  
+            var messageElement = document.createElement('div');  
+            messageElement.textContent = 'You: ' + message;  
+            messagesDiv.appendChild(messageElement);  
+        }  
+    }  
+</script>  
+  
+</body>  
+</html>
